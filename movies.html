@@ -68,6 +68,7 @@ border-radius:24px;
 padding:10px 18px;
 font-weight:bold;
 cursor:pointer;
+color:#000;
 transition:.25s;
 }
 
@@ -113,19 +114,58 @@ flex-direction:column;
 gap:30px;
 }
 
-.frame-container{
-width:100%;
-height:520px;
-background:#000;
-border:2px solid #00ff88;
-border-radius:20px;
-box-shadow:0 0 30px rgba(0,255,136,0.4);
-overflow:hidden;
+#modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.95);
+z-index:9999;
+flex-direction:column;
 }
 
-iframe{
+#modal.open{
+display:flex;
+}
+
+#modal-bar{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:12px 20px;
+background:#000;
+border-bottom:1px solid rgba(0,255,136,0.3);
+flex-shrink:0;
+}
+
+#modal-title{
+font-size:14px;
+color:#00ff88;
+letter-spacing:1px;
+}
+
+#modal-close{
+background:transparent;
+border:1px solid rgba(0,255,136,0.5);
+color:#00ff88;
+font-family:monospace;
+font-size:18px;
+width:36px;
+height:36px;
+border-radius:50%;
+cursor:pointer;
+transition:.2s;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+#modal-close:hover{
+background:rgba(0,255,136,0.15);
+}
+
+#modal iframe{
+flex:1;
 width:100%;
-height:100%;
 border:none;
 }
 
@@ -138,16 +178,52 @@ gap:20px;
 .movie{
 cursor:pointer;
 transition:.25s;
+position:relative;
 }
 
 .movie img{
 width:100%;
 border-radius:12px;
-border:2px solid #00ff88;
+border:2px solid transparent;
+transition:.25s;
+display:block;
+}
+
+.movie:hover img{
+border-color:#00ff88;
 }
 
 .movie:hover{
 transform:scale(1.08);
+}
+
+.movie-title{
+font-size:11px;
+color:#b8ffe3;
+margin-top:6px;
+text-align:center;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+#load-more{
+display:block;
+margin:10px auto 0;
+background:transparent;
+border:1px solid #00ff88;
+color:#00ff88;
+border-radius:24px;
+padding:10px 30px;
+font-family:monospace;
+font-size:14px;
+cursor:pointer;
+letter-spacing:1px;
+transition:.25s;
+}
+
+#load-more:hover{
+background:rgba(0,255,136,0.1);
 }
 
 </style>
@@ -156,74 +232,140 @@ transform:scale(1.08);
 <body>
 
 <div class="header-wrapper">
-<h1>GHOST THEATER</h1>
+  <h1>GHOST THEATER</h1>
 </div>
 
 <div class="search-container">
-<div class="search-bar">
-<input id="searchInput" placeholder="Search movies...">
-<button onclick="searchMovies()">Search</button>
-</div>
+  <div class="search-bar">
+    <input id="searchInput" placeholder="Search movies...">
+    <button onclick="searchMovies()">Search</button>
+  </div>
 </div>
 
 <nav class="side-nav">
-<ul>
-<li><a href="index.html"><img src="home.png" class="nav-icon"></a></li>
-<li><a href="games.html"><img src="games.png" class="nav-icon"></a></li>
-<li><a href="movies.html"><img src="movies.png" class="nav-icon" style="filter:drop-shadow(0 0 10px #00ff88) brightness(1.3);"></a></li>
-<li><a href="music.html"><img src="music.png" class="nav-icon"></a></li>
-<li><a href="settings.html"><img src="settings.png" class="nav-icon"></a></li>
-</ul>
+  <ul>
+    <li><a href="index.html"><img src="home.png" class="nav-icon"></a></li>
+    <li><a href="games.html"><img src="games.png" class="nav-icon"></a></li>
+    <li><a href="movies.html"><img src="movies.png" class="nav-icon" style="filter:drop-shadow(0 0 10px #00ff88) brightness(1.3);"></a></li>
+    <li><a href="music.html"><img src="music.png" class="nav-icon"></a></li>
+    <li><a href="settings.html"><img src="settings.png" class="nav-icon"></a></li>
+  </ul>
 </nav>
 
 <main>
 
-<div class="frame-container">
-<iframe id="player" allowfullscreen></iframe>
-</div>
-
-<div class="movie-list" id="movies"></div>
+  <div class="movie-list" id="movies"></div>
+  <button id="load-more" onclick="loadMore()">Load More</button>
 
 </main>
 
+<div id="modal">
+  <div id="modal-bar">
+    <span id="modal-title"></span>
+    <button id="modal-close" onclick="closeModal()">✕</button>
+  </div>
+  <iframe id="player" allowfullscreen></iframe>
+</div>
+
 <script>
 
-const apiKey="00119ffd2d069c15532a335d74664364";
-const movies=document.getElementById("movies")
-const player=document.getElementById("player")
+const apiKey = "00119ffd2d069c15532a335d74664364";
+const moviesEl = document.getElementById("movies");
+const player = document.getElementById("player");
+const modal = document.getElementById("modal");
+const modalTitle = document.getElementById("modal-title");
+const loadMoreBtn = document.getElementById("load-more");
 
-async function loadMovies(){
-movies.innerHTML=""
-for(let page=1;page<=6;page++){
-const res=await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&page=${page}`)
-const data=await res.json()
-renderMovies(data.results)
-}
-}
+let currentPage = 1;
+let isSearching = false;
+let searchPage = 1;
+let lastQuery = "";
 
-function renderMovies(list){
-list.forEach(movie=>{
-if(!movie.poster_path)return
-const div=document.createElement("div")
-div.className="movie"
-div.innerHTML=`<img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">`
-div.onclick=()=>{
-player.src=`https://vidsrc.to/embed/movie/${movie.id}`
-}
-movies.appendChild(div)
-})
+function playMovie(id, title) {
+  player.src = `https://vidsrc.me/embed/movie?tmdb=${id}`;
+  modalTitle.textContent = title.toUpperCase();
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
 }
 
-async function searchMovies(){
-const q=document.getElementById("searchInput").value
-if(!q)return
-movies.innerHTML=""
-const res=await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${q}`)
-const data=await res.json()
-renderMovies(data.results)
+function closeModal() {
+  modal.classList.remove("open");
+  player.src = "";
+  document.body.style.overflow = "";
 }
 
-loadMovies()
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeModal();
+});
+
+function renderMovies(list) {
+  list.forEach(movie => {
+    if (!movie.poster_path) return;
+    const div = document.createElement("div");
+    div.className = "movie";
+    div.innerHTML = `
+      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" loading="lazy">
+      <div class="movie-title">${movie.title || movie.name || ""}</div>
+    `;
+    div.onclick = () => playMovie(movie.id, movie.title || movie.name || "Unknown");
+    moviesEl.appendChild(div);
+  });
+}
+
+async function loadMovies() {
+  isSearching = false;
+  loadMoreBtn.style.display = "block";
+  const res = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&page=${currentPage}`);
+  const data = await res.json();
+  renderMovies(data.results);
+}
+
+async function loadMore() {
+  if (isSearching) {
+    searchPage++;
+    const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(lastQuery)}&page=${searchPage}`);
+    const data = await res.json();
+    if (data.results && data.results.length > 0) {
+      renderMovies(data.results);
+    } else {
+      loadMoreBtn.textContent = "No more results";
+      loadMoreBtn.disabled = true;
+    }
+  } else {
+    currentPage++;
+    const res = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&page=${currentPage}`);
+    const data = await res.json();
+    renderMovies(data.results);
+  }
+}
+
+async function searchMovies() {
+  const q = document.getElementById("searchInput").value.trim();
+  if (!q) {
+    moviesEl.innerHTML = "";
+    currentPage = 1;
+    isSearching = false;
+    loadMoreBtn.textContent = "Load More";
+    loadMoreBtn.disabled = false;
+    loadMovies();
+    return;
+  }
+  lastQuery = q;
+  searchPage = 1;
+  isSearching = true;
+  moviesEl.innerHTML = "";
+  loadMoreBtn.textContent = "Load More";
+  loadMoreBtn.disabled = false;
+  const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}&page=1`);
+  const data = await res.json();
+  renderMovies(data.results);
+}
+
+document.getElementById("searchInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") searchMovies();
+});
+
+loadMovies();
 
 </script>
 
