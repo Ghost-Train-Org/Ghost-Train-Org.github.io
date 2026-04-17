@@ -41,7 +41,15 @@ async function loadZones() {
     const data = await response.json();
     return data;
 }
-
+const CUSTOM_GAMES = [
+    {
+        id: 99999,
+        name: "Balatro",
+        cover: "https://cdn.jsdelivr.net/gh/sea-bean-unblocked/ghost-assets-for-games@main/balatro/cover.png",
+        url: "https://cdn.jsdelivr.net/gh/sea-bean-unblocked/ghost-assets-for-games@main/balatro/index.html",
+        popularity: 999999
+    }
+];
 loadZones()
 .then(data => {
     allGames = data.map(g => ({
@@ -50,7 +58,8 @@ loadZones()
         url: g.url.replace("{HTML_URL}", HTML_URL).replace("{COVER_URL}", COVER_URL),
         popularity: popularityMap[g.id] || 0
     }));
-    allGames.sort((a, b) => b.popularity - a.popularity);
+    allGames = [...CUSTOM_GAMES, ...allGames];
+allGames.sort((a, b) => b.popularity - a.popularity);
     render(allGames);
 })
 .catch(err => {
