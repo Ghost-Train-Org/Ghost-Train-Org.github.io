@@ -46,7 +46,7 @@ const CUSTOM_GAMES = [
         id: 99999,
         name: "Balatro",
         cover: "balatroT.avif",
-        url: "https://cdn.jsdelivr.net/gh/sea-bean-unblocked/ghost-assets-for-games@main/balatro/index.html",
+        url: "balatro.html",
         popularity: 999999
     }
 ];
