@@ -121,26 +121,33 @@
 
     <script>
         document.getElementById("sj-form").addEventListener("submit", function (e) {
-            e.preventDefault();
+    e.preventDefault();
 
-            let input = document.getElementById("sj-address").value.trim();
-            if (!input) return;
+    let input = document.getElementById("sj-address").value.trim();
+    if (!input) return;
 
-            let finalUrl;
+    let finalUrl;
 
-            try {
-                if (!input.match(/^https?:\/\//i)) {
-                    input = "https://" + input;
-                }
-                new URL(input);
-                finalUrl = input;
-
-            } catch {
-                finalUrl = "https://duckduckgo.com/?q=" + encodeURIComponent(input);
+    try {
+        // Check if it's already a valid URL
+        finalUrl = new URL(input).toString();
+    } catch {
+        try {
+            // Try adding https:// and check if hostname has a dot (real domain)
+            const testUrl = new URL("https://" + input);
+            if (testUrl.hostname.includes(".") && !testUrl.hostname.includes(" ")) {
+                finalUrl = "https://" + input;
+            } else {
+                throw new Error("Not a domain");
             }
+        } catch {
+            // Treat as search query
+            finalUrl = "https://duckduckgo.com/?q=" + encodeURIComponent(input);
+        }
+    }
 
-            window.location.href = "/active/embed.html?url=" + encodeURIComponent(finalUrl);
-        });
+    window.location.href = "/active/embed.html?url=" + encodeURIComponent(finalUrl);
+});
     </script>
 
     <a href="https://discord.gg/cF3jXhce5t" class="discord-btn" target="_blank">
