@@ -13,60 +13,7 @@
 
 <body>
 
-    <div id="transition-loader" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #15161a; z-index: 9999; flex-direction: column; justify-content: center; align-items: center;">
-    <img src="sj.png" style="width: 150px; filter: drop-shadow(0 0 15px #00ff88); margin-bottom: 10px;">
-    <h1 style="text-shadow: 0 0 20px #00ff88; font-family: monospace; font-size: 80px; color: white; margin: 0 0 30px 0;">GHOST TRAIN</h1>
-    <div style="width: 300px; height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; border: 1px solid rgba(0, 255, 136, 0.2); overflow: hidden;">
-        <div id="transition-bar" style="width: 0%; height: 100%; background: #00ff88; box-shadow: 0 0 15px #00ff88; transition: width 0.4s ease;"></div>
-    </div>
-</div>
-
-<!-- Keep your existing form but update the script below -->
-<form id="sj-form" class="flex-center">
-    <input id="sj-address" type="text" placeholder="Travel to your destination!" />
-</form>
-
-<script>
-document.getElementById("sj-form").addEventListener("submit", function (e) {
-    e.preventDefault();
     
-    let input = document.getElementById("sj-address").value.trim();
-    if (!input) return;
-
-    let finalUrl;
-    try {
-        finalUrl = new URL(input).toString();
-    } catch {
-        try {
-            const testUrl = new URL("https://" + input);
-            if (testUrl.hostname.includes(".") && !testUrl.hostname.includes(" ")) {
-                finalUrl = "https://" + input;
-            } else { throw new Error(); }
-        } catch {
-            finalUrl = "https://duckduckgo.com" + encodeURIComponent(input);
-        }
-    }
-
-    // 1. Show the loading screen overlay
-    const loader = document.getElementById('transition-loader');
-    const bar = document.getElementById('transition-bar');
-    loader.style.display = 'flex';
-
-    // 2. Animate the bar
-    let width = 0;
-    const interval = setInterval(() => {
-        if (width >= 100) {
-            clearInterval(interval);
-            // 3. FINALLY redirect once the bar is full
-            window.location.href = "/active/embed.html?url=" + encodeURIComponent(finalUrl);
-        } else {
-            width += Math.floor(Math.random() * 20) + 10;
-            if (width > 100) width = 100;
-            bar.style.width = width + '%';
-        }
-    }, 200); 
-});
-</script>
     <div title="Ghost Train Logo" class="flex-center logo-wrapper header-center">
         <img class="logo" src="sj.png" alt="Ghost Train" style="width: 150px; filter: drop-shadow(0 0 15px #00ff88);">
         <h1 style="text-shadow: 0 0 20px #00ff88; font-family: monospace; font-size: 80px;">
