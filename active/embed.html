@@ -1,115 +1,92 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
     <title>Ghost Train | Loading...</title>
 
     <link rel="icon" type="image/png" href="sj.png">
-    <link rel="stylesheet" href="index.css" />
     
     <style>
-        /* Loading Bar Specific Styles */
-        .loader-wrapper {
-            width: 100%;
+        body {
+            background-color: #15161a;
+            margin: 0;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            margin-top: 30px;
-        }
-
-        .loader-container {
-            width: 300px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            height: 100vh;
+            font-family: monospace;
             overflow: hidden;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
         }
 
+        .container {
+            text-align: center;
+        }
+
+        .logo {
+            width: 150px;
+            filter: drop-shadow(0 0 15px #00ff88);
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #ffffff;
+            text-shadow: 0 0 20px #00ff88;
+            font-size: 80px;
+            margin: 0 0 30px 0;
+        }
+
+        /* Loading Bar Container */
+        .loader-track {
+            width: 300px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            margin: 0 auto;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            overflow: hidden;
+        }
+
+        /* The Moving Part */
         .loader-fill {
             width: 0%;
             height: 100%;
             background: #00ff88;
             box-shadow: 0 0 15px #00ff88;
-            transition: width 0.3s ease-out;
-        }
-
-        /* Prevent page scrolling during load */
-        body {
-            overflow: hidden;
-            background-color: #15161a; /* Matches your current embed bg */
+            transition: width 0.4s ease;
         }
     </style>
 </head>
 
 <body>
-    <!-- CLONED HOME SCREEN LAYOUT -->
-    <div title="Ghost Train Logo" class="flex-center logo-wrapper header-center">
-        <img class="logo" src="sj.png" alt="Ghost Train" style="width: 150px; filter: drop-shadow(0 0 15px #00ff88);">
-        <h1 style="text-shadow: 0 0 20px #00ff88; font-family: monospace; font-size: 80px; margin-bottom: 0;">
-            GHOST TRAIN
-        </h1>
+    <div class="container">
+        <!-- Logo & Text -->
+        <img class="logo" src="sj.png" alt="Ghost Train">
+        <h1>GHOST TRAIN</h1>
 
-        <div class="flex-center desc left-margin">
-            <p id="loading-text" style="text-align: center; color: #cccccc; font-family: monospace; font-size: 1.1rem; text-shadow: 0 0 10px rgba(0, 255, 136, 0.8); max-width: 600px; margin: 20px auto;">
-                Initializing Ghost Engine...
-            </p>
-        </div>
-
-        <!-- PROGRESS BAR REPLACES SEARCH FORM -->
-        <div class="loader-wrapper">
-            <div class="loader-container">
-                <div class="loader-fill" id="progress-bar"></div>
-            </div>
+        <!-- Loading Bar -->
+        <div class="loader-track">
+            <div class="loader-fill" id="progress"></div>
         </div>
     </div>
 
-    <!-- SIDE NAV RENDERED FOR CONSISTENCY -->
-    <nav class="side-nav">
-        <ul>
-            <li><a href="#"><img src="home.png" class="nav-icon"></a></li>
-            <li><a href="#"><img src="games.png" class="nav-icon"></a></li>
-            <li><a href="#"><img src="movies.png" class="nav-icon"></a></li>
-            <li><a href="#"><img src="music.png" class="nav-icon"></a></li>
-            <li><a href="#"><img src="settings.png" class="nav-icon"></a></li>
-        </ul>
-    </nav>
-
     <script>
-        // Progress Bar Logic
-        const bar = document.getElementById('progress-bar');
-        const status = document.getElementById('loading-text');
+        const bar = document.getElementById('progress');
         let width = 0;
 
-        const stages = [
-            { p: 20, t: "Checking tracks..." },
-            { p: 45, t: "Stoking the ghost fire..." },
-            { p: 75, t: "Clearing the tunnel..." },
-            { p: 95, t: "Arriving at destination..." }
-        ];
-
-        const frame = () => {
+        // Automatically fill the bar
+        const interval = setInterval(() => {
             if (width >= 100) {
-                // When finished, you can trigger your embed or redirect
-                status.innerText = "Welcome aboard.";
+                clearInterval(interval);
+                // Optional: Redirect to your actual home page when done
+                // window.location.href = "index.html"; 
             } else {
-                width += Math.random() * 2; 
+                // Randomly increase progress for a natural feel
+                width += Math.floor(Math.random() * 15) + 5;
+                if (width > 100) width = 100;
                 bar.style.width = width + '%';
-
-                // Update text based on progress
-                const stage = stages.find(s => width < s.p);
-                if (stage) status.innerText = stage.t;
-
-                requestAnimationFrame(frame);
             }
-        };
-
-        // Start the animation
-        setTimeout(() => {
-            requestAnimationFrame(frame);
-        }, 500);
+        }, 400);
     </script>
 </body>
 </html>
