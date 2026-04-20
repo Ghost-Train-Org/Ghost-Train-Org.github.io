@@ -31,28 +31,30 @@ function openCredits() {
           color: #00ff88;
           font-family: monospace;
           display: flex;
-          flex-direction: column;
           align-items: center;
           justify-content: center;
           height: 100vh;
-          text-align: center;
         }
 
-        h1 {
-          margin-bottom: 10px;
-          text-shadow: 0 0 10px #00ff88;
+        .row {
+          display: flex;
+          gap: 40px;
+          font-size: 16px;
+          white-space: nowrap;
         }
 
-        p {
-          margin: 4px 0;
+        .item {
+          text-shadow: 0 0 8px #00ff88;
         }
       </style>
     </head>
+
     <body>
-      <h1>Credits</h1>
-      <p>Ghost Train UI</p>
-      <p>Made by: You</p>
-      <p>Powered by HTML + JavaScript</p>
+      <div class="row">
+        <div class="item">Credits</div>
+        <div class="item">Made by: Clutchdemon, Leah, Devvy, Vail, and Lockiney</div>
+        <div class="item">HTML + JS</div>
+      </div>
     </body>
     </html>
   `);
