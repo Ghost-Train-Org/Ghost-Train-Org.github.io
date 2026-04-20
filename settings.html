@@ -11,6 +11,53 @@
 <script src="register-sw.js" defer></script>
 
 <script>
+function openCredits() {
+  const win = window.open("", "_blank");
+
+  if (!win) {
+    alert("Popup blocked — allow popups to view credits.");
+    return;
+  }
+
+  win.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Credits</title>
+      <style>
+        body {
+          margin: 0;
+          background: black;
+          color: #00ff88;
+          font-family: monospace;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          text-align: center;
+        }
+
+        .box {
+          border: 1px solid #00ff88;
+          padding: 20px;
+          border-radius: 6px;
+          box-shadow: 0 0 10px #00ff88;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="box">
+        <h1>Credits</h1>
+        <p>Ghost Train UI</p>
+        <p>Made by: You</p>
+        <p>Powered by HTML + JS</p>
+      </div>
+    </body>
+    </html>
+  `);
+
+  win.document.close();
+}
 function openInAboutBlank() {
 const currentUrl = window.location.origin + "/index.html";
 const win = window.open('about:blank', '_blank');
@@ -50,7 +97,26 @@ win.document.close();
 </head>
 
 <body>
-
+<button onclick="openCredits()" 
+onmouseover="this.style.background='black'; this.style.color='#00ff88'"
+onmouseout="this.style.background='#00ff88'; this.style.color='black'"
+style="
+  width: 120px;
+  height: 40px;
+  background:#00ff88;
+  color:black;
+  border:1.5px solid #00ff88;
+  font-family:monospace;
+  font-size:13px;
+  cursor:pointer;
+  border-radius:4px;
+  box-shadow:0 0 8px #00ff88;
+  display:inline-block;
+  white-space:nowrap;
+  margin-top:10px;
+">
+  Credits
+</button>
 <button onclick="openInAboutBlank()" 
 onmouseover="this.style.background='black'; this.style.color='#00ff88'"
 onmouseout="this.style.background='#00ff88'; this.style.color='black'"
