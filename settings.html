@@ -1,31 +1,119 @@
 <!doctype html>
 <html>
-<button onclick="openInAboutBlank()">open in about:blank</button>
- </html>
+<button onclick="openInAboutBlank()" class="ghost-btn">ENTER GHOST MODE</button>
+</html>
+
+<style>
+.ghost-btn {
+  background: transparent;
+  border: 1px solid #00ff88;
+  color: #00ff88;
+  font-family: monospace;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.ghost-btn:hover {
+  background: #00ff88;
+  color: black;
+  box-shadow: 0 0 15px #00ff88;
+}
+</style>
+
 <script>
 function openInAboutBlank() {
   const currentUrl = window.location.href;
-  const aboutBlankWindow = window.open('about:blank', '_blank');
- if (aboutBlankWindow) {
-    aboutBlankWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>New Tab</title>
-        <style>
-          body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-          iframe { width: 100%; height: 100%; border: none; }
-        </style>
-      </head>
-      <body>
-        <iframe src="${currentUrl}"></iframe>
-      </body>
-      </html>
-    `);
-    aboutBlankWindow.document.close();
-  } else {
-    alert("popup blocked, please allow popups for this site");
+  const win = window.open('about:blank', '_blank');
+
+  if (!win) {
+    alert("Popup blocked — allow popups to board the Ghost Train.");
+    return;
   }
+
+  win.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Ghost Train</title>
+      <style>
+        body {
+          margin: 0;
+          background: black;
+          color: #00ff88;
+          font-family: monospace;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          overflow: hidden;
+        }
+
+        #loader {
+          text-align: center;
+          text-shadow: 0 0 10px #00ff88;
+        }
+
+        iframe {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border: none;
+          display: none;
+        }
+
+        .glitch {
+          animation: flicker 0.15s infinite;
+        }
+
+        @keyframes flicker {
+          0% { opacity: 1; }
+          50% { opacity: 0.6; }
+          100% { opacity: 1; }
+        }
+      </style>
+    </head>
+
+    <body>
+      <div id="loader" class="glitch">
+        <h1>GHOST TRAIN</h1>
+        <p id="status">Initializing...</p>
+      </div>
+
+      <iframe id="frame" src="${currentUrl}"></iframe>
+
+      <script>
+        const messages = [
+          "Connecting to underground rails...",
+          "Bypassing restrictions...",
+          "Opening portal...",
+          "Injecting ghost protocol...",
+          "Entering destination..."
+        ];
+
+        let i = 0;
+        const status = document.getElementById("status");
+
+        const interval = setInterval(() => {
+          status.textContent = messages[i];
+          i++;
+
+          if (i >= messages.length) {
+            clearInterval(interval);
+
+            setTimeout(() => {
+              document.getElementById("loader").style.display = "none";
+              document.getElementById("frame").style.display = "block";
+            }, 500);
+          }
+        }, 400);
+      <\/script>
+    </body>
+    </html>
+  `);
+
+  win.document.close();
 }
 </script>
 
