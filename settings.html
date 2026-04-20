@@ -1,5 +1,34 @@
 <!doctype html>
 <html>
+<button onclick="openInAboutBlank()">open in about:blank</button>
+ </html>
+<script>
+function openInAboutBlank() {
+  const currentUrl = window.location.href;
+  const aboutBlankWindow = window.open('about:blank', '_blank');
+ if (aboutBlankWindow) {
+    aboutBlankWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>New Tab</title>
+        <style>
+          body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+          iframe { width: 100%; height: 100%; border: none; }
+        </style>
+      </head>
+      <body>
+        <iframe src="${currentUrl}"></iframe>
+      </body>
+      </html>
+    `);
+    aboutBlankWindow.document.close();
+  } else {
+    alert("popup blocked, please allow popups for this site");
+  }
+}
+</script>
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
@@ -28,39 +57,7 @@
         <div></div>
     </footer>
 
-    <script>
-        document.getElementById("sj-form").addEventListener("submit", function (e) {
-    e.preventDefault();
 
-    let input = document.getElementById("sj-address").value.trim();
-    if (!input) return;
-
-    let finalUrl;
-
-    try {
-        // Check if it's already a valid URL
-        finalUrl = new URL(input).toString();
-    } catch {
-        try {
-            // Try adding https:// and check if hostname has a dot (real domain)
-            const testUrl = new URL("https://" + input);
-            if (testUrl.hostname.includes(".") && !testUrl.hostname.includes(" ")) {
-                finalUrl = "https://" + input;
-            } else {
-                throw new Error("Not a domain");
-            }
-        } catch {
-            // Treat as search query
-            finalUrl = "https://duckduckgo.com/?q=" + encodeURIComponent(input);
-        }
-    }
-
-    window.location.href = "/active/embed.html?url=" + encodeURIComponent(finalUrl);
-});
-    </script>
-
-    <a href="https://discord.gg/cF3jXhce5t" class="discord-btn" target="_blank">
-        <img src="discord.png" alt="Discord">
     </a>
 </body>
 </html>
