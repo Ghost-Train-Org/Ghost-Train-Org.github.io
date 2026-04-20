@@ -31,27 +31,28 @@ function openCredits() {
           color: #00ff88;
           font-family: monospace;
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
           height: 100vh;
           text-align: center;
         }
 
-        .box {
-          border: 1px solid #00ff88;
-          padding: 20px;
-          border-radius: 6px;
-          box-shadow: 0 0 10px #00ff88;
+        h1 {
+          margin-bottom: 10px;
+          text-shadow: 0 0 10px #00ff88;
+        }
+
+        p {
+          margin: 4px 0;
         }
       </style>
     </head>
     <body>
-      <div class="box">
-        <h1>Credits</h1>
-        <p>Ghost Train UI</p>
-        <p>Made by: You</p>
-        <p>Powered by HTML + JS</p>
-      </div>
+      <h1>Credits</h1>
+      <p>Ghost Train UI</p>
+      <p>Made by: You</p>
+      <p>Powered by HTML + JavaScript</p>
     </body>
     </html>
   `);
