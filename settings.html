@@ -1,156 +1,90 @@
 <!doctype html>
 <html>
-<button onclick="openInAboutBlank()" 
-onmouseover="this.style.background='black'; this.style.color='#00ff88'"
-onmouseout="this.style.background='#00ff88'; this.style.color='black'"
-style="
-  width: 120px;
-  height: 40px;
-  background:#00ff88;
-  color:black;
-  border:1.5px solid #00ff88;
-  font-family:monospace;
-  font-size:13px;
-  padding:6px 14px;
-  cursor:pointer;
-  border-radius:4px;
-  box-shadow:0 0 8px #00ff88;
-  width:auto;
-  display:inline-block;
-  flex:0;
-  white-space:nowrap;
-">
-  Open About Blank
-</button>
-</html>
-</style>
-
-<script>
-function openInAboutBlank() {
-  const currentUrl = window.location.origin + "/index.html";
-  const win = window.open('about:blank', '_blank');
-
-  if (!win) {
-    alert("Popup blocked — allow popups to open about blank.");
-    return;
-  }
-
-  win.document.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Ghost Train</title>
-      <style>
-        body {
-          margin: 0;
-          background: black;
-          color: #00ff88;
-          font-family: monospace;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
-          overflow: hidden;
-        }
-
-        #loader {
-          text-align: center;
-          text-shadow: 0 0 10px #00ff88;
-        }
-
-        iframe {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          border: none;
-          display: none;
-        }
-
-        .glitch {
-          animation: flicker 0.15s infinite;
-        }
-
-        @keyframes flicker {
-          0% { opacity: 1; }
-          50% { opacity: 0.6; }
-          100% { opacity: 1; }
-        }
-      </style>
-    </head>
-
-    <body>
-      <div id="loader" class="glitch">
-        <h1>GHOST TRAIN</h1>
-        <p id="status">Initializing...</p>
-      </div>
-
-      <iframe id="frame" src="${currentUrl}"></iframe>
-
-      <script>
-        const messages = [
-          "Connecting to underground rails...",
-          "Bypassing restrictions...",
-          "Opening portal...",
-          "Injecting ghost protocol...",
-          "Entering destination..."
-        ];
-
-        let i = 0;
-        const status = document.getElementById("status");
-
-        const interval = setInterval(() => {
-          status.textContent = messages[i];
-          i++;
-
-          if (i >= messages.length) {
-            clearInterval(interval);
-
-            setTimeout(() => {
-              document.getElementById("loader").style.display = "none";
-              document.getElementById("frame").style.display = "block";
-            }, 500);
-          }
-        }, 400);
-      <\/script>
-    </body>
-    </html>
-  `);
-
-  win.document.close();
-}
-</script>
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
-    <title>Settings</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
+  <title>Settings</title>
 
-    <link rel="icon" type="image/png" href="sj.png">
+  <link rel="icon" type="image/png" href="sj.png">
+  <link rel="stylesheet" href="index.css" />
+  <script src="register-sw.js" defer></script>
 
-    <link rel="stylesheet" href="index.css" />
-    <script src="register-sw.js" defer></script>
+  <script>
+  function openInAboutBlank() {
+    const currentUrl = window.location.origin + "/index.html";
+    const win = window.open('about:blank', '_blank');
+
+    if (!win) {
+      alert("Popup blocked — allow popups to open about blank.");
+      return;
+    }
+
+    win.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Ghost Train</title>
+        <style>
+          body {
+            margin: 0;
+            background: black;
+            color: #00ff88;
+            font-family: monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+          }
+        </style>
+      </head>
+      <body>
+        <iframe src="${currentUrl}" style="width:100%;height:100%;border:none;"></iframe>
+      </body>
+      </html>
+    `);
+
+    win.document.close();
+  }
+  </script>
 </head>
 
 <body>
 
-    <nav class="side-nav">
-        <ul>
-            <li><a href="index.html" title="Home"><img src="home.png" class="nav-icon"></a></li>
-            <li><a href="games.html" title="Games"><img src="games.png" class="nav-icon"></a></li>
-            <li><a href="movies.html" title="Movies"><img src="movies.png" class="nav-icon"></a></li>
-            <li><a href="music.html" title="Music"><img src="music.png" class="nav-icon"></a></li>
-            <li><a href="settings.html" title="Settings"><img src="settings.png" class="nav-icon"></a></li>
-        </ul>
-    </nav>
+  <button onclick="openInAboutBlank()" 
+    onmouseover="this.style.background='black'; this.style.color='#00ff88'"
+    onmouseout="this.style.background='#00ff88'; this.style.color='black'"
+    style="
+      width: 120px;
+      height: 40px;
+      background:#00ff88;
+      color:black;
+      border:1.5px solid #00ff88;
+      font-family:monospace;
+      font-size:13px;
+      cursor:pointer;
+      border-radius:4px;
+      box-shadow:0 0 8px #00ff88;
+      display:inline-block;
+      white-space:nowrap;
+    ">
+    Open About Blank
+  </button>
 
-    <footer>
-        <div></div>
-        <div></div>
-    </footer>
+  <nav class="side-nav">
+    <ul>
+      <li><a href="index.html"><img src="home.png" class="nav-icon"></a></li>
+      <li><a href="games.html"><img src="games.png" class="nav-icon"></a></li>
+      <li><a href="movies.html"><img src="movies.png" class="nav-icon"></a></li>
+      <li><a href="music.html"><img src="music.png" class="nav-icon"></a></li>
+      <li><a href="settings.html"><img src="settings.png" class="nav-icon"></a></li>
+    </ul>
+  </nav>
 
+  <footer>
+    <div></div>
+    <div></div>
+  </footer>
 
-    </a>
 </body>
 </html>
