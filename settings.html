@@ -1,53 +1,46 @@
-<!doctype html>
-<html>
+<script>
+function openInAboutBlank() {
+  const currentUrl = window.location.origin + "/index.html";
+  const win = window.open('about:blank', '_blank');
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
-  <title>Settings</title>
-
-  <link rel="icon" type="image/png" href="sj.png">
-  <link rel="stylesheet" href="index.css" />
-  <script src="register-sw.js" defer></script>
-
-  <script>
-  function openInAboutBlank() {
-    const currentUrl = window.location.origin + "/index.html";
-    const win = window.open('about:blank', '_blank');
-
-    if (!win) {
-      alert("Popup blocked — allow popups to open about blank.");
-      return;
-    }
-
-    win.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Ghost Train</title>
-        <style>
-          body {
-            margin: 0;
-            background: black;
-            color: #00ff88;
-            font-family: monospace;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-          }
-        </style>
-      </head>
-      <body>
-        <iframe src="${currentUrl}" style="width:100%;height:100%;border:none;"></iframe>
-      </body>
-      </html>
-    `);
-
-    win.document.close();
+  if (!win) {
+    alert("Popup blocked — allow popups to open about blank.");
+    return;
   }
 
-    <script>
+  win.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Ghost Train</title>
+      <style>
+        body {
+          margin: 0;
+          background: black;
+          color: #00ff88;
+          font-family: monospace;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+        }
+
+        iframe {
+          width: 100%;
+          height: 100%;
+          border: none;
+        }
+      </style>
+    </head>
+    <body>
+      <iframe src="${currentUrl}"></iframe>
+    </body>
+    </html>
+  `);
+
+  win.document.close();
+}
+
 function openCredits() {
   const win = window.open("", "_blank");
 
@@ -96,66 +89,3 @@ function openCredits() {
   win.document.close();
 }
 </script>
-  </script>
-</head>
-
-<body>
-
-  <button onclick="openCredits()" 
-onmouseover="this.style.background='black'; this.style.color='#00ff88'"
-onmouseout="this.style.background='#00ff88'; this.style.color='black'"
-style="
-  width: 120px;
-  height: 40px;
-  background:#00ff88;
-  color:black;
-  border:1.5px solid #00ff88;
-  font-family:monospace;
-  font-size:13px;
-  cursor:pointer;
-  border-radius:4px;
-  box-shadow:0 0 8px #00ff88;
-  display:inline-block;
-  white-space:nowrap;
-  margin-top:10px;
-">
-  Credits
-</button>
-
-  <button onclick="openInAboutBlank()" 
-    onmouseover="this.style.background='black'; this.style.color='#00ff88'"
-    onmouseout="this.style.background='#00ff88'; this.style.color='black'"
-    style="
-      width: 130px;
-      height: 40px;
-      background:#00ff88;
-      color:black;
-      border:1.5px solid #00ff88;
-      font-family:monospace;
-      font-size:13px;
-      cursor:pointer;
-      border-radius:4px;
-      box-shadow:0 0 8px #00ff88;
-      display:inline-block;
-      white-space:nowrap;
-    ">
-    Open About Blank
-  </button>
-
-  <nav class="side-nav">
-    <ul>
-      <li><a href="index.html"><img src="home.png" class="nav-icon"></a></li>
-      <li><a href="games.html"><img src="games.png" class="nav-icon"></a></li>
-      <li><a href="movies.html"><img src="movies.png" class="nav-icon"></a></li>
-      <li><a href="music.html"><img src="music.png" class="nav-icon"></a></li>
-      <li><a href="settings.html"><img src="settings.png" class="nav-icon"></a></li>
-    </ul>
-  </nav>
-
-  <footer>
-    <div></div>
-    <div></div>
-  </footer>
-
-</body>
-</html>
