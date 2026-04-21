@@ -129,25 +129,50 @@ font-family:monospace;
 color:white;
 ">
 
-<button onclick="toggleFullscreen()" style="
-background:none;
-border:none;
-color:#00ff88;
-font-size:20px;
-cursor:pointer;
-">
-⛶
-</button>
-
-<button onclick="closeGame()" style="
-background:none;
-border:none;
-color:#00ff88;
-font-size:20px;
-cursor:pointer;
+<div style="
+position:relative;
+display:flex;
+align-items:center;
+width:100%;
 ">
 
-</button>
+  <!-- Left button -->
+  <button style="
+  background:none;
+  border:none;
+  color:#00ff88;
+  font-size:20px;
+  cursor:pointer;
+  ">
+    ⛶
+  </button>
+
+  <!-- Center title (absolute center) -->
+  <span id="game-title" style="
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  text-shadow:0 0 10px #00ff88;
+  color:#00ff88;
+  font-size:20px;
+  white-space:nowrap;
+  ">
+    Game
+  </span>
+
+  <!-- Right button -->
+  <button class="gh-action" onclick="closeGame()" style="
+  margin-left:auto;
+  background:none;
+  border:none;
+  color:#00ff88;
+  font-size:20px;
+  cursor:pointer;
+  ">
+    ✕
+  </button>
+
+</div>
 
 <span id="game-title" style="
   text-shadow:0 0 10px #00ff88;
