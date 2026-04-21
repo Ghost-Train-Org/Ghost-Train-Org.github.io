@@ -130,11 +130,11 @@
     let finalUrl;
 
     try {
-        // Check if it's already a valid URL
+       
         finalUrl = new URL(input).toString();
     } catch {
         try {
-            // Try adding https:// and check if hostname has a dot (real domain)
+            
             const testUrl = new URL("https://" + input);
             if (testUrl.hostname.includes(".") && !testUrl.hostname.includes(" ")) {
                 finalUrl = "https://" + input;
@@ -142,7 +142,7 @@
                 throw new Error("Not a domain");
             }
         } catch {
-            // Treat as search query
+          
             finalUrl = "https://duckduckgo.com/?q=" + encodeURIComponent(input);
         }
     }
