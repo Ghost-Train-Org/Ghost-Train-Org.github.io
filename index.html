@@ -47,17 +47,7 @@
     </div>
 
     <footer>
-        <div id="user-count" style="
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    color: #00ff88;
-    font-family: monospace;
-    font-size: 14px;
-    text-shadow: 0 0 10px #00ff88;
-">
-    Users online: ...
-</div>
+
     </footer>
 
    <!-- <script>
@@ -158,24 +148,6 @@
 
     window.location.href = "/active/embed.html?url=" + encodeURIComponent(finalUrl);
 });
-
-        <script>
-async function updateUserCount() {
-    try {
-        const res = await fetch("/api/users");
-        const data = await res.json();
-        document.getElementById("user-count").innerText =
-            "Users online: " + data.count;
-    } catch (e) {
-        document.getElementById("user-count").innerText =
-            "Users online: ?";
-    }
-}
-
-updateUserCount();
-setInterval(updateUserCount, 5000);
-</script>
-    </script>
 
     <a href="https://discord.gg/cF3jXhce5t" class="discord-btn" target="_blank">
         <img src="discord.png" alt="Discord">
