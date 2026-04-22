@@ -307,34 +307,6 @@
   <div id="tab-general" class="tab-panel active">
 
     <div class="setting-box">
-      <h3>Theme</h3>
-      <p>The color scheme used across the whole site.</p>
-      <select class="setting-select">
-        <option>default</option>
-        <option>dark</option>
-        <option>light</option>
-        <option>matrix</option>
-      </select>
-    </div>
-
-    <div class="setting-box">
-      <h3>Performance Mode</h3>
-      <p>For slow devices. Disables animations, blur effects, and background.</p>
-      <label class="toggle-label">
-        <input type="checkbox">
-        <span class="toggle-track"><span class="toggle-thumb"></span></span>
-        <span>Disabled</span>
-      </label>
-    </div>
-
-    <div class="setting-box">
-      <h3>Tab Cloak</h3>
-      <p>Change the tab title and icon to disguise this site.</p>
-      <input class="setting-input" type="text" placeholder="Tab title..." style="margin-bottom:8px;display:block;">
-      <input class="setting-input" type="text" placeholder="Icon URL...">
-    </div>
-
-    <div class="setting-box">
       <h3>Open About:Blank</h3>
       <p>Opens the site inside an about:blank tab for extra stealth.</p>
       <button class="setting-btn" onclick="openInAboutBlank()">Open About Blank</button>
@@ -348,67 +320,6 @@
 
   </div>
 
-  <!-- ── GAMING ── -->
-  <div id="tab-gaming" class="tab-panel">
-
-    <div class="setting-box">
-      <h3>Show FPS Counter</h3>
-      <p>Display a frames-per-second counter during gameplay.</p>
-      <label class="toggle-label">
-        <input type="checkbox">
-        <span class="toggle-track"><span class="toggle-thumb"></span></span>
-        <span>Disabled</span>
-      </label>
-    </div>
-
-    <div class="setting-box">
-      <h3>Low Latency Mode</h3>
-      <p>Reduces input lag for supported games.</p>
-      <label class="toggle-label">
-        <input type="checkbox">
-        <span class="toggle-track"><span class="toggle-thumb"></span></span>
-        <span>Disabled</span>
-      </label>
-    </div>
-
-  </div>
-
-  <!-- ── PROXY ── -->
-  <div id="tab-proxy" class="tab-panel">
-
-    <div class="setting-box">
-      <h3>Proxy URL</h3>
-      <p>The backend proxy used to unblock sites.</p>
-      <input class="setting-input" type="text" placeholder="https://...">
-    </div>
-
-    <div class="setting-box">
-      <h3>Transport</h3>
-      <p>Protocol used to connect to the proxy server.</p>
-      <select class="setting-select">
-        <option>Epoxy</option>
-        <option>Libcurl</option>
-        <option>WebSocket</option>
-      </select>
-    </div>
-
-  </div>
-
-  <!-- ── INFO ── -->
-  <div id="tab-info" class="tab-panel">
-
-    <div class="setting-box">
-      <h3>About</h3>
-      <p>Build information for this instance.</p>
-      <div class="info-row"><span>Version</span><span>v2.0.0</span></div>
-      <div class="info-row"><span>UV Version</span><span>v2</span></div>
-      <div class="info-row"><span>Build</span><span>production</span></div>
-      <div class="info-row"><span>Backend</span><span>Leah 🔥</span></div>
-    </div>
-
-  </div>
-
-</div>
 
 <footer>
   <div></div>
