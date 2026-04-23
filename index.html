@@ -1,8 +1,9 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
     <title>Ghost Train</title>
 
     <link rel="icon" type="image/png" href="sj.png">
@@ -13,7 +14,7 @@
 
 <body>
 
-    
+
     <div title="Ghost Train Logo" class="flex-center logo-wrapper header-center">
         <img class="logo" src="sj.png" alt="Ghost Train" style="width: 150px; filter: drop-shadow(0 0 15px #00ff88);">
         <h1 style="text-shadow: 0 0 20px #00ff88; font-family: monospace; font-size: 80px;">
@@ -50,7 +51,7 @@
 
     </footer>
 
-   <!-- <script>
+    <!-- <script>
          const ghostlyMessages = [
             "Ghost Services is the goat",
             "I hate Coach Kelly",
@@ -119,37 +120,38 @@
     </script> -->
 
     <script>
-        document.getElementById("sj-form").addEventListener("submit", function (e) {
-    e.preventDefault();
+        document.getElementById("sj-form").addEventListener("submit", function(e) {
+            e.preventDefault();
 
-    let input = document.getElementById("sj-address").value.trim();
-    if (!input) return;
+            let input = document.getElementById("sj-address").value.trim();
+            if (!input) return;
 
-    let finalUrl;
+            let finalUrl;
 
-    try {
-       
-        finalUrl = new URL(input).toString();
-    } catch {
-        try {
-            
-            const testUrl = new URL("https://" + input);
-            if (testUrl.hostname.includes(".") && !testUrl.hostname.includes(" ")) {
-                finalUrl = "https://" + input;
-            } else {
-                throw new Error("Not a domain");
+            try {
+
+                finalUrl = new URL(input).toString();
+            } catch {
+                try {
+
+                    const testUrl = new URL("https://" + input);
+                    if (testUrl.hostname.includes(".") && !testUrl.hostname.includes(" ")) {
+                        finalUrl = "https://" + input;
+                    } else {
+                        throw new Error("Not a domain");
+                    }
+                } catch {
+
+                    finalUrl = "https://duckduckgo.com/?q=" + encodeURIComponent(input);
+                }
             }
-        } catch {
-          
-            finalUrl = "https://duckduckgo.com/?q=" + encodeURIComponent(input);
-        }
-    }
 
-    window.location.href = "/active/embed.html?url=" + encodeURIComponent(finalUrl);
-});
-</script>
+            window.location.href = "/active/embed.html?url=" + encodeURIComponent(finalUrl);
+        });
+    </script>
     <a href="https://discord.gg/cF3jXhce5t" class="discord-btn" target="_blank">
         <img src="discord.png" alt="Discord">
     </a>
 </body>
+
 </html>
