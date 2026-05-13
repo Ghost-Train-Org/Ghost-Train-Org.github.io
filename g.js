@@ -46,7 +46,8 @@ const CUSTOM_GAMES = [
 id: 99999,
 name: "Balatro",
 cover: "balatroT.avif",
-url: "balatro.html",
+        url: "https://cdn.jsdelivr.net/gh/sea-bean-unblocked/ghost-assets-for-games@main/balatro/index.html",
+        url: "balatro.html",
 popularity: 999999
 }
 ];
@@ -133,49 +134,18 @@ gameTitleEl.textContent = `${game.name}.dat`;
 gameContainer.style.display = "flex";
 document.body.style.overflow = "hidden";
 gameContent.innerHTML = "";
-
 const iframe = document.createElement("iframe");
 iframe.allowFullscreen = true;
-    iframe.allow = "autoplay; fullscreen; pointer-lock";
-    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals allow-downloads");
-    gameContent.appendChild(iframe);
-
-    try {
-        let html = await fetch(game.url + "?t=" + Date.now()).then(r => {
-            if (!r.ok) throw new Error(`HTTP ${r.status}`);
-            return r.text();
-        });
-    iframe.allow = "autoplay; fullscreen; pointer-lock; clipboard-read; clipboard-write";
-    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals allow-downloads allow-storage-access-by-user-activation");
-    iframe.src = game.url + "?t=" + Date.now();
-
-        const base = game.url.substring(0, game.url.lastIndexOf("/") + 1);
-        if (!html.match(/<base/i)) {
-            html = html.replace(/<head>/i, `<head><base href="${base}">`);
-        }
-
-        // Use blob URL instead of document.write — much more reliable
-        const blob = new Blob([html], { type: "text/html" });
-        const blobURL = URL.createObjectURL(blob);
-        iframe.src = blobURL;
-    // Show a loading indicator while the game loads
-    gameContent.innerHTML = `<div id="load-msg" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#aaa;font-size:14px">Loading ${game.name}...</div>`;
-    gameContent.appendChild(iframe);
-
-        // Clean up blob URL after load
-        iframe.onload = () => URL.revokeObjectURL(blobURL);
-    iframe.onload = () => {
-        const msg = document.getElementById("load-msg");
-        if (msg) msg.remove();
-    };
-
-    } catch (err) {
-        gameContent.innerHTML = `<div style="color:red;padding:20px">Failed to load game: ${err.message}</div>`;
-    }
-    iframe.onerror = () => {
-        gameContent.innerHTML = `<div style="color:red;padding:20px">Failed to load ${game.name}. The game file may be missing or unavailable.</div>`;
-    };
-
+iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups");
+gameContent.appendChild(iframe);
+let html = await fetch(game.url + "?t=" + Date.now()).then(r => r.text());
+const base = game.url.substring(0, game.url.lastIndexOf("/") + 1);
+if (!html.match(/<base/i)) {
+html = html.replace("<head>", `<head><base href="${base}">`);
+}
+iframe.contentWindow.document.open();
+iframe.contentWindow.document.write(html);
+iframe.contentWindow.document.close();
 document.title = `${game.name} - Ghost Train`;
 }
 
