@@ -138,7 +138,7 @@ async function openGame(game) {
     iframe.allowFullscreen = true;
     iframe.allow = "autoplay; fullscreen; pointer-lock; clipboard-read; clipboard-write";
     iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals allow-downloads allow-storage-access-by-user-activation");
-    iframe.src = game.url + "?t=" + Date.now();
+    iframe.src = game.url;
 
     // Show a loading indicator while the game loads
     gameContent.innerHTML = `<div id="load-msg" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#aaa;font-size:14px">Loading ${game.name}...</div>`;
