@@ -25,15 +25,16 @@ fetch(POP_URL)
 })
 .catch(() => console.warn("Popularity stats unavailable"));
 
+let resolvedSHA = "main"; // fallback
+
 async function loadZones() {
-    // Try to get latest SHA for cache busting
-    let zonesURL = ZONES_URLS[Math.floor(Math.random() * ZONES_URLS.length)];
+    let zonesURL = ZONES_URLS[0];
     try {
         const shaResponse = await fetch("https://api.github.com/repos/freebuisness/assets/commits?t=" + Date.now());
         if (shaResponse.status === 200) {
             const shaJson = await shaResponse.json();
-            const sha = shaJson[0]['sha'];
-            if (sha) zonesURL = `https://cdn.jsdelivr.net/gh/freebuisness/assets@${sha}/zones.json`;
+            resolvedSHA = shaJson[0]['sha'];
+            zonesURL = `https://cdn.jsdelivr.net/gh/freebuisness/assets@${resolvedSHA}/zones.json`;
         }
     } catch (e) {}
 
