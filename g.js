@@ -133,18 +133,36 @@ async function openGame(game) {
     gameContainer.style.display = "flex";
     document.body.style.overflow = "hidden";
     gameContent.innerHTML = "";
+
     const iframe = document.createElement("iframe");
     iframe.allowFullscreen = true;
-    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups");
+    iframe.allow = "autoplay; fullscreen; pointer-lock";
+    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals allow-downloads");
     gameContent.appendChild(iframe);
-    let html = await fetch(game.url + "?t=" + Date.now()).then(r => r.text());
-    const base = game.url.substring(0, game.url.lastIndexOf("/") + 1);
-    if (!html.match(/<base/i)) {
-        html = html.replace("<head>", `<head><base href="${base}">`);
+
+    try {
+        let html = await fetch(game.url + "?t=" + Date.now()).then(r => {
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            return r.text();
+        });
+
+        const base = game.url.substring(0, game.url.lastIndexOf("/") + 1);
+        if (!html.match(/<base/i)) {
+            html = html.replace(/<head>/i, `<head><base href="${base}">`);
+        }
+
+        // Use blob URL instead of document.write — much more reliable
+        const blob = new Blob([html], { type: "text/html" });
+        const blobURL = URL.createObjectURL(blob);
+        iframe.src = blobURL;
+
+        // Clean up blob URL after load
+        iframe.onload = () => URL.revokeObjectURL(blobURL);
+
+    } catch (err) {
+        gameContent.innerHTML = `<div style="color:red;padding:20px">Failed to load game: ${err.message}</div>`;
     }
-    iframe.contentWindow.document.open();
-    iframe.contentWindow.document.write(html);
-    iframe.contentWindow.document.close();
+
     document.title = `${game.name} - Ghost Train`;
 }
 
