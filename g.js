@@ -136,32 +136,22 @@ async function openGame(game) {
 
     const iframe = document.createElement("iframe");
     iframe.allowFullscreen = true;
-    iframe.allow = "autoplay; fullscreen; pointer-lock";
-    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals allow-downloads");
+    iframe.allow = "autoplay; fullscreen; pointer-lock; clipboard-read; clipboard-write";
+    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-modals allow-downloads allow-storage-access-by-user-activation");
+    iframe.src = game.url + "?t=" + Date.now();
+
+    // Show a loading indicator while the game loads
+    gameContent.innerHTML = `<div id="load-msg" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#aaa;font-size:14px">Loading ${game.name}...</div>`;
     gameContent.appendChild(iframe);
 
-    try {
-        let html = await fetch(game.url + "?t=" + Date.now()).then(r => {
-            if (!r.ok) throw new Error(`HTTP ${r.status}`);
-            return r.text();
-        });
+    iframe.onload = () => {
+        const msg = document.getElementById("load-msg");
+        if (msg) msg.remove();
+    };
 
-        const base = game.url.substring(0, game.url.lastIndexOf("/") + 1);
-        if (!html.match(/<base/i)) {
-            html = html.replace(/<head>/i, `<head><base href="${base}">`);
-        }
-
-        // Use blob URL instead of document.write — much more reliable
-        const blob = new Blob([html], { type: "text/html" });
-        const blobURL = URL.createObjectURL(blob);
-        iframe.src = blobURL;
-
-        // Clean up blob URL after load
-        iframe.onload = () => URL.revokeObjectURL(blobURL);
-
-    } catch (err) {
-        gameContent.innerHTML = `<div style="color:red;padding:20px">Failed to load game: ${err.message}</div>`;
-    }
+    iframe.onerror = () => {
+        gameContent.innerHTML = `<div style="color:red;padding:20px">Failed to load ${game.name}. The game file may be missing or unavailable.</div>`;
+    };
 
     document.title = `${game.name} - Ghost Train`;
 }
