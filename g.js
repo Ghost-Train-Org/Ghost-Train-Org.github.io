@@ -129,6 +129,7 @@ searchInput.addEventListener("input", e => {
 });
 
 async function openGame(game) {
+    console.log("Opening:", game.url);
     gameTitleEl.textContent = `${game.name}.dat`;
     gameContainer.style.display = "flex";
     document.body.style.overflow = "hidden";
