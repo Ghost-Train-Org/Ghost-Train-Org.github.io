@@ -49,7 +49,7 @@ const CUSTOM_GAMES = [
         name: "Balatro",
         cover: "balatroT.avif",
         // Use the full external URL so openGame knows to src the iframe directly
-        url: "https://cdn.jsdelivr.net/gh/sea-bean-unblocked/ghost-assets-for-games@main/balatro/index.html",
+        url: "balatro.html",
         popularity: 999999
     }
 ];
@@ -132,9 +132,6 @@ searchInput.addEventListener("input", e => {
     render(allGames.filter(g => g.name.toLowerCase().includes(q)));
 });
 
-// Returns true if the URL should be loaded via iframe src instead of fetch+write.
-// This covers full http/https URLs and local .html files that use external scripts
-// (like love.js / emscripten games) which break when fetched and document.written.
 function shouldSrcLoad(url) {
     return url.startsWith("http://") || url.startsWith("https://");
 }
@@ -151,14 +148,12 @@ async function openGame(game) {
     iframe.allowFullscreen = true;
 
     if (shouldSrcLoad(game.url)) {
-        // External URLs (Balatro, etc.) — navigate iframe directly.
-        // No allow-same-origin: game runs in its own origin, no sandbox escape risk.
+    
         iframe.setAttribute("sandbox", "allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals");
         gameContent.appendChild(iframe);
         iframe.src = game.url;
     } else {
-        // Local gn-math zones — fetch HTML and inject via srcdoc.
-        // srcdoc avoids the allow-scripts + allow-same-origin sandbox escape issue.
+
         iframe.setAttribute("sandbox", "allow-scripts allow-forms allow-popups allow-modals");
         gameContent.appendChild(iframe);
 
