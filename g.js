@@ -49,6 +49,13 @@ cover: "balatroT.avif",
         url: "https://cdn.jsdelivr.net/gh/sea-bean-unblocked/ghost-assets-for-games@main/balatro/index.html",
         url: "balatro.html",
 popularity: 999999
+},
+{
+id: 89999,
+name: "Inscryption",
+cover: "balatroT.avif",
+        url: "inscryption.html",
+popularity: 999999
 }
 ];
 loadZones()
