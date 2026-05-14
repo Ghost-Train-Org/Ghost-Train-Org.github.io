@@ -7,25 +7,27 @@ const ZONES_URLS = [
     "https://cdn.jsdelivr.net/gh/freebuisness/assets/zones.json"
 ];
 const POP_URL = "https://data.jsdelivr.com/v1/stats/packages/gh/freebuisness/html@main/files?period=year";
+ 
 const gameGrid = document.getElementById("games");
 const searchInput = document.getElementById("search");
 const gameContainer = document.getElementById("gameContainer");
 const gameContent = document.getElementById("gameContent");
 const gameTitleEl = document.getElementById("game-title");
+ 
 let allGames = [];
 let popularityMap = {};
+ 
 fetch(POP_URL)
-.then(r => r.json())
-.then(data => {
-    data.forEach(file => {
-        const idMatch = file.name.match(/\/(\d+)\.html$/);
-        if (idMatch) popularityMap[parseInt(idMatch[1])] = file.hits?.total || 0;
-    });
-})
-.catch(() => console.warn("Popularity stats unavailable"));
-
+    .then(r => r.json())
+    .then(data => {
+        data.forEach(file => {
+            const idMatch = file.name.match(/\/(\d+)\.html$/);
+            if (idMatch) popularityMap[parseInt(idMatch[1])] = file.hits?.total || 0;
+        });
+    })
+    .catch(() => console.warn("Popularity stats unavailable"));
+ 
 async function loadZones() {
-    // Try to get latest SHA for cache busting
     let zonesURL = ZONES_URLS[Math.floor(Math.random() * ZONES_URLS.length)];
     try {
         const shaResponse = await fetch("https://api.github.com/repos/freebuisness/assets/commits?t=" + Date.now());
@@ -35,36 +37,39 @@ async function loadZones() {
             if (sha) zonesURL = `https://cdn.jsdelivr.net/gh/freebuisness/assets@${sha}/zones.json`;
         }
     } catch (e) {}
-
+ 
     const response = await fetch(zonesURL + "?t=" + Date.now());
     const data = await response.json();
     return data;
 }
+ 
 const CUSTOM_GAMES = [
     {
         id: 99999,
         name: "Balatro",
         cover: "balatroT.avif",
-        url: "balatro.html",
+        // Use the full external URL so openGame knows to src the iframe directly
+        url: "https://cdn.jsdelivr.net/gh/sea-bean-unblocked/ghost-assets-for-games@main/balatro/index.html",
         popularity: 999999
     }
 ];
+ 
 loadZones()
-.then(data => {
-    allGames = data.map(g => ({
-        ...g,
-        cover: g.cover.replace("{COVER_URL}", COVER_URL).replace("{HTML_URL}", HTML_URL),
-        url: g.url.replace("{HTML_URL}", HTML_URL).replace("{COVER_URL}", COVER_URL),
-        popularity: popularityMap[g.id] || 0
-    }));
-    allGames = [...CUSTOM_GAMES, ...allGames];
-allGames.sort((a, b) => b.popularity - a.popularity);
-    render(allGames);
-})
-.catch(err => {
-    gameGrid.textContent = "Failed to load games: " + err;
-});
-
+    .then(data => {
+        allGames = data.map(g => ({
+            ...g,
+            cover: g.cover.replace("{COVER_URL}", COVER_URL).replace("{HTML_URL}", HTML_URL),
+            url: g.url.replace("{HTML_URL}", HTML_URL).replace("{COVER_URL}", COVER_URL),
+            popularity: popularityMap[g.id] || 0
+        }));
+        allGames = [...CUSTOM_GAMES, ...allGames];
+        allGames.sort((a, b) => b.popularity - a.popularity);
+        render(allGames);
+    })
+    .catch(err => {
+        gameGrid.textContent = "Failed to load games: " + err;
+    });
+ 
 function render(games) {
     gameGrid.innerHTML = "";
     if (!games.length) {
@@ -91,7 +96,7 @@ function render(games) {
     lazyLoadImages();
     enableImageHoverTracking();
 }
-
+ 
 function lazyLoadImages() {
     const images = document.querySelectorAll("img[data-src]");
     const observer = new IntersectionObserver(entries => {
@@ -105,7 +110,7 @@ function lazyLoadImages() {
     }, { rootMargin: "100px" });
     images.forEach(img => observer.observe(img));
 }
-
+ 
 function enableImageHoverTracking() {
     document.querySelectorAll(".card-icon").forEach(icon => {
         const img = icon.querySelector("img");
@@ -121,38 +126,59 @@ function enableImageHoverTracking() {
         });
     });
 }
-
+ 
 searchInput.addEventListener("input", e => {
     const q = e.target.value.toLowerCase();
     render(allGames.filter(g => g.name.toLowerCase().includes(q)));
 });
-
+ 
+// Returns true if the URL should be loaded via iframe src instead of fetch+write.
+// This covers full http/https URLs and local .html files that use external scripts
+// (like love.js / emscripten games) which break when fetched and document.written.
+function shouldSrcLoad(url) {
+    return url.startsWith("http://") || url.startsWith("https://");
+}
+ 
 async function openGame(game) {
     gameTitleEl.textContent = `${game.name}.dat`;
     gameContainer.style.display = "flex";
     document.body.style.overflow = "hidden";
     gameContent.innerHTML = "";
-    const iframe = document.createElement("iframe");
-    iframe.allowFullscreen = true;
-    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups");
-    gameContent.appendChild(iframe);
-    let html = await fetch(game.url + "?t=" + Date.now()).then(r => r.text());
-    const base = game.url.substring(0, game.url.lastIndexOf("/") + 1);
-    if (!html.match(/<base/i)) {
-        html = html.replace("<head>", `<head><base href="${base}">`);
-    }
-    iframe.contentWindow.document.open();
-    iframe.contentWindow.document.write(html);
-    iframe.contentWindow.document.close();
     document.title = `${game.name} - Ghost Train`;
+ 
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText = "width:100%;height:100%;border:none;display:block;";
+    iframe.allowFullscreen = true;
+ 
+    if (shouldSrcLoad(game.url)) {
+        // For external URLs (Balatro, etc.) — set src directly so all scripts
+        // load in their own origin context without being broken by document.write.
+        iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox");
+        gameContent.appendChild(iframe);
+        iframe.src = game.url;
+    } else {
+        // For local gn-math zones — fetch HTML and write it in (existing behaviour).
+        iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups");
+        gameContent.appendChild(iframe);
+ 
+        let html = await fetch(game.url + "?t=" + Date.now()).then(r => r.text());
+        const base = game.url.substring(0, game.url.lastIndexOf("/") + 1);
+        if (!html.match(/<base/i)) {
+            html = html.replace("<head>", `<head><base href="${base}">`);
+        }
+        iframe.contentWindow.document.open();
+        iframe.contentWindow.document.write(html);
+        iframe.contentWindow.document.close();
+    }
 }
-
+ 
 window.closeGame = () => {
     gameContainer.style.display = "none";
     document.body.style.overflow = "";
     gameContent.innerHTML = "";
+    document.title = "Ghost Train";
 };
-
+ 
 window.toggleFullscreen = () => {
     if (!document.fullscreenElement) gameContent.requestFullscreen();
     else document.exitFullscreen();
