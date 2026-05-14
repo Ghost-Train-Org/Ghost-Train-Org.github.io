@@ -135,16 +135,11 @@ document.body.style.overflow = "hidden";
 gameContent.innerHTML = "";
 const iframe = document.createElement("iframe");
 iframe.allowFullscreen = true;
-iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-forms allow-popups");
+
 gameContent.appendChild(iframe);
-let html = await fetch(game.url + "?t=" + Date.now()).then(r => r.text());
-const base = game.url.substring(0, game.url.lastIndexOf("/") + 1);
-if (!html.match(/<base/i)) {
-html = html.replace("<head>", `<head><base href="${base}">`);
+
 }
-iframe.contentWindow.document.open();
-iframe.contentWindow.document.write(html);
-iframe.contentWindow.document.close();
+
 document.title = `${game.name} - Ghost Train`;
 }
 
