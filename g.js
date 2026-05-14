@@ -53,7 +53,7 @@ popularity: 999999
 {
 id: 89999,
 name: "Inscryption",
-cover: "balatroT.avif",
+cover: "inscryption.png",
         url: "inscryption.html",
 popularity: 999999
 }
