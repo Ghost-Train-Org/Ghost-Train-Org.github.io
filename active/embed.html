@@ -125,10 +125,12 @@
         if (url) {
             // Wait for SW to be ready before setting the iframe src
             navigator.serviceWorker.ready.then(() => {
-                frame.src = __uv$config.prefix + __uv$config.encodeUrl(url);
-                frame.addEventListener('load', finishLoading);
-                // Fallback in case load event doesn't fire
-                setTimeout(finishLoading, 8000);
+    // Replace history entry AFTER SW is ready — avoids the status 0 error
+    history.replaceState(null, '', location.href);
+    frame.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+    frame.addEventListener('load', finishLoading);
+    setTimeout(finishLoading, 8000);
+});
             });
         } else {
             // No URL provided, go back to index
