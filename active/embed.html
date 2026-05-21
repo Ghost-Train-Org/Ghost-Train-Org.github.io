@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
     <title>Ghost Train | Loading...</title>
-
     <link rel="icon" type="image/png" href="sj.png">
     
     <style>
@@ -18,18 +17,15 @@
             font-family: monospace;
             overflow: hidden;
         }
-
         .container {
             text-align: center;
         }
-
         h1 {
             color: #ffffff;
             text-shadow: 0 0 20px #00ff88;
             font-size: 80px;
             margin: 0 0 30px 0;
         }
-
         .loader-track {
             width: 300px;
             height: 10px;
@@ -39,7 +35,6 @@
             border: 1px solid rgba(0, 255, 136, 0.2);
             overflow: hidden;
         }
-
         .loader-fill {
             width: 0%;
             height: 100%;
@@ -49,31 +44,50 @@
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <h1>GHOST TRAIN</h1>
-
         <div class="loader-track">
             <div class="loader-fill" id="progress"></div>
         </div>
     </div>
-
     <script>
+        // Replace current history entry so the back button skips this page
+        history.replaceState(null, '', location.href);
+
         const bar = document.getElementById('progress');
         let width = 0;
+        let finished = false;
 
+        // Animate the bar up to ~90% while the page loads
         const interval = setInterval(() => {
-            if (width >= 100) {
+            if (width >= 90) {
                 clearInterval(interval);
             } else {
                 width += Math.floor(Math.random() * 15) + 5;
-                if (width > 100) width = 100;
+                if (width > 90) width = 90;
                 bar.style.width = width + '%';
             }
         }, 400);
-    </script>
 
+        function finish() {
+            if (finished) return;
+            finished = true;
+            clearInterval(interval);
+            // Snap to 100% then redirect
+            bar.style.transition = 'width 0.3s ease';
+            bar.style.width = '100%';
+            setTimeout(() => {
+                window.location.replace('index.html');
+            }, 350);
+        }
+
+        // Complete the bar when the page is fully loaded
+        window.addEventListener('load', finish);
+
+        // Fallback: force complete after 5 seconds no matter what
+        setTimeout(finish, 5000);
+    </script>
     <script src="uv/uv.bundle.js" charset="UTF-8"></script>
     <script src="uv/uv.config.js" charset="UTF-8"></script>
     <script src="register-sw.js"></script>
