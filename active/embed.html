@@ -4,54 +4,32 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"/>
     <title>Ghost Train | Loading...</title>
+
     <link rel="icon" type="image/png" href="sj.png">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             background-color: #15161a;
-            font-family: monospace;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        /* The iframe that shows the proxied site */
-        #proxy-frame {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        #proxy-frame.visible {
-            opacity: 1;
-        }
-
-        /* Loading overlay */
-        #loading-overlay {
-            position: fixed;
-            inset: 0;
-            background-color: #15161a;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 99999;
-            transition: opacity 0.4s ease;
+            height: 100vh;
+            font-family: monospace;
+            overflow: hidden;
         }
-        #loading-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
+
+        .container {
+            text-align: center;
         }
+
         h1 {
             color: #ffffff;
             text-shadow: 0 0 20px #00ff88;
             font-size: 80px;
             margin: 0 0 30px 0;
         }
+
         .loader-track {
             width: 300px;
             height: 10px;
@@ -61,6 +39,7 @@
             border: 1px solid rgba(0, 255, 136, 0.2);
             overflow: hidden;
         }
+
         .loader-fill {
             width: 0%;
             height: 100%;
@@ -70,73 +49,34 @@
         }
     </style>
 </head>
+
 <body>
+    <div class="container">
+        <h1>GHOST TRAIN</h1>
 
-    <iframe id="proxy-frame"></iframe>
-
-    <div id="loading-overlay">
-        <div style="text-align:center;">
-            <h1>GHOST TRAIN</h1>
-            <div class="loader-track">
-                <div class="loader-fill" id="progress"></div>
-            </div>
+        <div class="loader-track">
+            <div class="loader-fill" id="progress"></div>
         </div>
     </div>
+
+    <script>
+        const bar = document.getElementById('progress');
+        let width = 0;
+
+        const interval = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(interval);
+            } else {
+                width += Math.floor(Math.random() * 15) + 5;
+                if (width > 100) width = 100;
+                bar.style.width = width + '%';
+            }
+        }, 400);
+    </script>
 
     <script src="uv/uv.bundle.js" charset="UTF-8"></script>
     <script src="uv/uv.config.js" charset="UTF-8"></script>
     <script src="register-sw.js"></script>
-
-    <script>
-        const bar = document.getElementById('progress');
-        const overlay = document.getElementById('loading-overlay');
-        const frame = document.getElementById('proxy-frame');
-
-        let width = 0;
-        let finished = false;
-
-        // Animate bar to ~90% while proxy loads
-        const interval = setInterval(() => {
-            if (width >= 90) {
-                clearInterval(interval);
-            } else {
-                width += Math.floor(Math.random() * 15) + 5;
-                if (width > 90) width = 90;
-                bar.style.width = width + '%';
-            }
-        }, 400);
-
-        function finishLoading() {
-            if (finished) return;
-            finished = true;
-            clearInterval(interval);
-            bar.style.width = '100%';
-            setTimeout(() => {
-                frame.classList.add('visible');
-                overlay.classList.add('hidden');
-                setTimeout(() => overlay?.remove(), 400);
-            }, 350);
-        }
-
-        // Get the URL from query string and load it via UV proxy
-        const params = new URLSearchParams(location.search);
-        const url = params.get('url');
-
-        if (url) {
-            // Wait for SW to be ready before setting the iframe src
-            navigator.serviceWorker.ready.then(() => {
-    // Replace history entry AFTER SW is ready — avoids the status 0 error
-    history.replaceState(null, '', location.href);
-    frame.src = __uv$config.prefix + __uv$config.encodeUrl(url);
-    frame.addEventListener('load', finishLoading);
-    setTimeout(finishLoading, 8000);
-});
-            });
-        } else {
-            // No URL provided, go back to index
-            window.location.replace('index.html');
-        }
-    </script>
-
+    <script src="embed.js"></script>
 </body>
 </html>
